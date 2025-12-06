@@ -10,7 +10,7 @@ PROTO_FLAGS := --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-gr
 PROTO_FILES := services/identity/pkg/grpc/identitypb/identity.proto \
 	services/facility/pkg/grpc/facilitypb/facility.proto
 
-.PHONY: help tidy run run-% tidy-% run-all compose-up compose-down compose-migrate proto
+.PHONY: help tidy run run-% tidy-% run-all run-frontend compose-up compose-down compose-migrate proto
 
 help:
 	@echo "Available targets:"
@@ -18,6 +18,7 @@ help:
 	@echo "  tidy-<svc>  - go mod tidy for a specific service (e.g. make tidy-identity)"
 	@echo "  run-<svc>   - go run ./cmd/<svc> inside service folder"
 	@echo "  run-all     - sequentially start all services (blocking)"
+	@echo "  run-frontend- build & start nginx frontend container"
 	@echo "  proto       - regenerate Go gRPC stubs from .proto files"
 	@echo "  compose-up  - docker compose up --build"
 	@echo "  compose-down- docker compose down -v"
@@ -41,6 +42,10 @@ help:
 	@for svc in $(SERVICES); do \
 		$(MAKE) run-$$svc || exit 1; \
 	done
+
+run-frontend:
+	@echo "==> docker compose up frontend"
+	@docker compose up -d --build frontend
 
 proto:
 	@for file in $(PROTO_FILES); do \

@@ -2,8 +2,8 @@ go 1.21
 
 use (
 	./services/api-gateway
-	./services/identity
-	./services/facility
 	./services/booking
+	./services/facility
+	./services/identity
 	./services/notification
 )

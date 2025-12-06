@@ -100,5 +100,17 @@ services:
       - notification
     restart: unless-stopped
 
+  frontend:
+    build:
+      context: ./frontend
+    container_name: frontend
+    environment:
+      - FRONTEND_GATEWAY_URL=http://localhost:8080/graphql
+    ports:
+      - "4173:80"
+    depends_on:
+      - api-gateway
+    restart: unless-stopped
+
 volumes:
   postgres_data:

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sporthub Console</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Sporthub</p>
+          <h1>Operations Console</h1>
+          <p class="subcopy">
+            Управляйте пользователями, площадками и бронированиями поверх GraphQL.
+          </p>
+        </div>
+        <div class="hero-status" id="connection-status">Gateway: not tested</div>
+      </header>
+
+      <section class="panel" id="auth-panel">
+        <div class="panel-head">
+          <h2>1. Аутентификация</h2>
+          <button class="ghost" id="logout-btn" type="button">Выйти</button>
+        </div>
+        <div class="grid-two">
+          <form id="register-form" class="card">
+            <h3>Регистрация</h3>
+            <label>Email<input name="email" type="email" required /></label>
+            <label>Пароль<input name="password" type="password" required /></label>
+            <label>Имя<input name="fullName" required /></label>
+            <label>Роль<input name="role" placeholder="athlete" /></label>
+            <label>Телефон<input name="phone" placeholder="+7999..." /></label>
+            <button type="submit">Создать пользователя</button>
+          </form>
+          <form id="login-form" class="card">
+            <h3>Вход</h3>
+            <label>Email<input name="email" type="email" required /></label>
+            <label>Пароль<input name="password" type="password" required /></label>
+            <button type="submit">Войти</button>
+            <p class="hint">Токен сохранится в localStorage.</p>
+          </form>
+        </div>
+        <div class="status-group">
+          <div>
+            <strong>Токен:</strong>
+            <code id="token-preview">—</code>
+          </div>
+          <div>
+            <strong>Текущий пользователь:</strong>
+            <span id="current-user">нет</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="facilities-panel">
+        <div class="panel-head">
+          <h2>2. Площадки</h2>
+          <form id="facility-filter" class="inline">
+            <input name="city" placeholder="город" />
+            <input name="type" placeholder="тип" />
+            <button type="submit">Обновить</button>
+          </form>
+        </div>
+        <div id="facilities-list" class="cards"></div>
+      </section>
+
+      <section class="panel" id="booking-panel">
+        <div class="panel-head">
+          <h2>3. Создать бронь</h2>
+          <button class="ghost" id="prefill-demo" type="button">Заполнить демо-данные</button>
+        </div>
+        <form id="booking-form" class="card wide">
+          <label>Facility ID<input name="facilityId" required /></label>
+          <label>User ID<input name="userId" required /></label>
+          <div class="grid-two">
+            <label>Начало<input name="startsAt" type="datetime-local" required /></label>
+            <label>Конец<input name="endsAt" type="datetime-local" required /></label>
+          </div>
+          <div class="grid-two">
+            <label>Участники<input name="participants" type="number" min="1" /></label>
+            <label>Цена<input name="price" type="number" step="0.01" /></label>
+          </div>
+          <label>Заметки<textarea name="notes" rows="2"></textarea></label>
+          <button type="submit">Создать бронь</button>
+        </form>
+      </section>
+
+      <section class="panel" id="bookings-panel">
+        <div class="panel-head">
+          <h2>4. Просмотр броней</h2>
+          <form id="booking-filter" class="inline">
+            <input name="facilityId" placeholder="facility id" />
+            <input name="userId" placeholder="user id" />
+            <button type="submit">Загрузить</button>
+          </form>
+        </div>
+        <div id="bookings-list" class="cards"></div>
+      </section>
+
+      <section class="panel" id="activity-panel">
+        <div class="panel-head">
+          <h2>Логи</h2>
+          <button class="ghost" id="clear-log" type="button">Очистить</button>
+        </div>
+        <pre id="activity-log"></pre>
+      </section>
+    </main>
+    <script src="/__sporthub_config__.js"></script>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

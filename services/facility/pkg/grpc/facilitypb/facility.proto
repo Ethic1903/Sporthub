@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package facility.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "kursovaya_aksp/services/facility/pkg/grpc/facilitypb";
+
+message Facility {
+  string id = 1;
+  string name = 2;
+  string city = 3;
+  string address = 4;
+  string type = 5;
+  repeated string amenities = 6;
+  string description = 7;
+}
+
+message AvailabilitySlot {
+  google.protobuf.Timestamp start = 1;
+  google.protobuf.Timestamp end = 2;
+}
+
+message GetFacilityRequest {
+  string id = 1;
+}
+
+message GetFacilityResponse {
+  Facility facility = 1;
+}
+
+message ListAvailabilityRequest {
+  string facility_id = 1;
+}
+
+message ListAvailabilityResponse {
+  repeated AvailabilitySlot slots = 1;
+}
+
+service FacilityService {
+  rpc GetFacility(GetFacilityRequest) returns (GetFacilityResponse);
+  rpc ListAvailability(ListAvailabilityRequest) returns (ListAvailabilityResponse);
+}

@@ -1,0 +1,138 @@
+type Maintenance {
+  start: String!
+  end: String!
+  note: String
+}
+
+type AvailabilitySlot {
+  start: String!
+  end: String!
+}
+
+type Facility {
+  id: ID!
+  name: String
+  city: String
+  address: String
+  type: String
+  amenities: [String!]
+  description: String
+  maintenance: [Maintenance!]
+  createdAt: String
+  updatedAt: String
+}
+
+type Booking {
+  id: ID!
+  facilityId: String
+  userId: String
+  status: String
+  startsAt: String
+  endsAt: String
+  participants: Int
+  price: Float
+  notes: String
+  createdAt: String
+  updatedAt: String
+}
+
+type User {
+  id: ID!
+  email: String
+  fullName: String
+  role: String
+  phone: String
+  createdAt: String
+  updatedAt: String
+}
+
+type AuthPayload {
+  token: String!
+  user: User!
+}
+
+type Query {
+  facilities(city: String, type: String): [Facility!]
+  facility(id: ID!): Facility
+  bookings(facilityId: ID, userId: ID): [Booking!]
+  availability(facilityId: ID!): [AvailabilitySlot!]
+}
+
+type Mutation {
+  register(input: RegisterInput!): User!
+  login(input: LoginInput!): AuthPayload!
+  updateProfile(input: ProfileUpdateInput!): User!
+  createFacility(input: FacilityInput!): Facility!
+  updateFacility(id: ID!, input: FacilityPatchInput!): Facility!
+  deleteFacility(id: ID!): Boolean!
+  updateFacilityAvailability(id: ID!, slots: [AvailabilitySlotInput!]!): Boolean!
+  createBooking(input: BookingInput!): Booking!
+  updateBooking(id: ID!, input: BookingPatchInput!): Booking!
+  cancelBooking(id: ID!): Booking!
+  confirmBooking(id: ID!): Booking!
+  deleteBooking(id: ID!): Boolean!
+}
+
+input RegisterInput {
+  email: String!
+  password: String!
+  fullName: String!
+  role: String
+  phone: String
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+input ProfileUpdateInput {
+  fullName: String
+  phone: String
+}
+
+input MaintenanceInput {
+  start: String!
+  end: String!
+  note: String
+}
+
+input FacilityInput {
+  name: String!
+  city: String!
+  address: String!
+  type: String!
+  amenities: [String!]
+  description: String
+  maintenance: [MaintenanceInput!]
+}
+
+input FacilityPatchInput {
+  name: String
+  city: String
+  address: String
+  type: String
+  amenities: [String!]
+  description: String
+}
+
+input AvailabilitySlotInput {
+  start: String!
+  end: String!
+}
+
+input BookingInput {
+  facilityId: ID!
+  userId: ID!
+  startsAt: String!
+  endsAt: String!
+  participants: Int
+  price: Float
+  notes: String
+}
+
+input BookingPatchInput {
+  startsAt: String
+  endsAt: String
+  notes: String
+}

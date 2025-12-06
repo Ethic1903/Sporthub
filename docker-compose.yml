@@ -1,0 +1,104 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: sporthub-postgres
+    environment:
+      POSTGRES_DB: sporthub
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d sporthub"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  identity:
+    build:
+      context: .
+      dockerfile: services/identity/Dockerfile
+    container_name: identity
+    environment:
+      - IDENTITY_ADDR=:8081
+      - IDENTITY_GRPC_ADDR=:9081
+      - IDENTITY_DATABASE_URL=postgres://postgres:postgres@postgres:5432/sporthub?sslmode=disable
+    ports:
+      - "8081:8081"
+      - "9081:9081"
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  facility:
+    build:
+      context: .
+      dockerfile: services/facility/Dockerfile
+    container_name: facility
+    environment:
+      - FACILITY_ADDR=:8082
+      - FACILITY_GRPC_ADDR=:9082
+      - FACILITY_DATABASE_URL=postgres://postgres:postgres@postgres:5432/sporthub?sslmode=disable
+    ports:
+      - "8082:8082"
+      - "9082:9082"
+    restart: unless-stopped
+    depends_on:
+      - postgres
+
+  booking:
+    build:
+      context: .
+      dockerfile: services/booking/Dockerfile
+    container_name: booking
+    environment:
+      - BOOKING_ADDR=:8083
+      - BOOKING_DATABASE_URL=postgres://postgres:postgres@postgres:5432/sporthub?sslmode=disable
+      - FACILITY_GRPC_ADDR=facility:9082
+      - IDENTITY_GRPC_ADDR=identity:9081
+    ports:
+      - "8083:8083"
+    depends_on:
+      - postgres
+      - facility
+      - identity
+    restart: unless-stopped
+
+  notification:
+    build:
+      context: .
+      dockerfile: services/notification/Dockerfile
+    container_name: notification
+    environment:
+      - NOTIFICATION_ADDR=:8084
+    ports:
+      - "8084:8084"
+    restart: unless-stopped
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: services/api-gateway/Dockerfile
+    container_name: api-gateway
+    environment:
+      - GATEWAY_ADDR=:8080
+      - IDENTITY_URL=http://identity:8081
+      - FACILITY_URL=http://facility:8082
+      - BOOKING_URL=http://booking:8083
+      - NOTIFICATION_URL=http://notification:8084
+    ports:
+      - "8080:8080"
+    depends_on:
+      - identity
+      - facility
+      - booking
+      - notification
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

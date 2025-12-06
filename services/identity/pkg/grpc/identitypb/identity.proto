@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package identity.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "kursovaya_aksp/services/identity/pkg/grpc/identitypb";
+
+message User {
+  string id = 1;
+  string email = 2;
+  string full_name = 3;
+  string role = 4;
+  string phone = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+message GetUserRequest {
+  string id = 1;
+}
+
+message GetUserResponse {
+  User user = 1;
+}
+
+message ValidateTokenRequest {
+  string token = 1;
+}
+
+message ValidateTokenResponse {
+  User user = 1;
+}
+
+service IdentityService {
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+  rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
+}

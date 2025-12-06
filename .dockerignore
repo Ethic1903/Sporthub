@@ -1,0 +1,12 @@
+# General
+.git
+.gitignore
+.vscode
+node_modules
+bin
+obj
+*.log
+
+# Go build caches
+**/vendor
+**/tmp

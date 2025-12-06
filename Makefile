@@ -55,7 +55,7 @@ proto:
 
 # Stop containers and drop named volumes
  compose-down:
-	@docker compose down -v
+	@docker compose down
 
 # Apply all SQL migrations using the postgres container
  compose-migrate:
